@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2024 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -33,7 +33,7 @@
 /* USER CODE BEGIN PD */
 #define MAX_VALUE 999
 #define MIN_VALUE 0
-#define TIMING 1000
+#define DELAY 1000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,7 +47,7 @@ TIM_HandleTypeDef htim1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-volatile uint32_t Tick;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,30 +96,38 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Encoder_Start(&htim1, htim1.Channel);
-  sct_init();
-  sct_led(0x7A5C36DE);
-  HAL_Delay(1000);
+	HAL_TIM_Encoder_Start(&htim1, htim1.Channel);
+	sct_init();
+	sct_led(0x7A5C36DE);
+	HAL_Delay(1000);
+	uint16_t i = MIN_VALUE;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+	while (1) {
 
-	  uint16_t value = __HAL_TIM_GET_COUNTER(&htim1);
-	  sct_value(value);
+
+		uint16_t value = __HAL_TIM_GET_COUNTER(&htim1);
+		sct_value(value);
+		/*
+		static uint32_t last_tick;
+
+		if (uwTick > last_tick + DELAY) {
+			sct_value(i);
+			last_tick = uwTick;
+			i+=111;
+		}
+
+		if (i> MAX_VALUE) {
+			i = MIN_VALUE;
+		}
+		*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  /*Tick += uwTickFreq;
-	  for (uint16_t i = MIN_VALUE; i < MAX_VALUE; i+=111) {
-		  if (Tick>TIMING ) {
-			  sct_value(i);
-			  Tick = 0;
-		}
-	}*/
-  }
+
+	}
   /* USER CODE END 3 */
 }
 
@@ -182,7 +190,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 150;
+  htim1.Init.Period = 999;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -304,11 +312,10 @@ static void MX_GPIO_Init(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+	/* User can add his own implementation to report the HAL error return state */
+	__disable_irq();
+	while (1) {
+	}
   /* USER CODE END Error_Handler_Debug */
 }
 
