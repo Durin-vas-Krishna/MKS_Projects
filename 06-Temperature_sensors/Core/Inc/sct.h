@@ -13,7 +13,7 @@
 #define INC_SCT_H_
 
 void sct_init();
-void sct_value(uint16_t value, uint16_t led);
+void sct_value(uint16_t value, uint8_t led, uint8_t point);
 void sct_led(uint32_t value);
 
 #endif /* INC_SCT_H_ */
