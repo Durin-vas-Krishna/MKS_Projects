@@ -99,7 +99,7 @@ static void telnet_process_command(char *cmd, struct netconn *conn) {
 
 		} else if (strcasecmp(token, "OFF") == 0) {
 			HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
-			sprintf(s,"OK\n\r");
+			sprintf(s,"VYPINAM LED1\n\r");
 			netconn_write(conn, s, strlen(s), NETCONN_COPY);
 		}
 		//LED 2
@@ -112,15 +112,9 @@ static void telnet_process_command(char *cmd, struct netconn *conn) {
 
 		} else if (strcasecmp(token, "OFF") == 0) {
 			HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
-			sprintf(s,"OK\n\r");
+			sprintf(s,"VYPINAM LED2\n\r");
 			netconn_write(conn, s, strlen(s), NETCONN_COPY);
 		}
-	} else if (strcasecmp(token, "STATUS") == 0) {
-		if (HAL_GPIO_ReadPin(LD1_GPIO_Port, LD1_Pin)){
-			sprintf(s,"LED1 ON\n\r");
-			netconn_write(conn, s, strlen(s), NETCONN_COPY);
-		}
-
 		//LED 3
 	} else if (strcasecmp(token, "LED3") == 0) {
 		token = strtok(NULL, " ");
@@ -131,30 +125,34 @@ static void telnet_process_command(char *cmd, struct netconn *conn) {
 
 		} else if (strcasecmp(token, "OFF") == 0) {
 			HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, 0);
-			sprintf(s,"OK\n\r");
+			sprintf(s,"VYPINAM LED3\n\r");
 			netconn_write(conn, s, strlen(s), NETCONN_COPY);
 		}
+		//STATUS
 	} else if (strcasecmp(token, "STATUS") == 0) {
-		if (HAL_GPIO_ReadPin(LD3_GPIO_Port, LD3_Pin)){
-			sprintf(s,"LED3 ON\n\r");
+		if (HAL_GPIO_ReadPin(LD1_GPIO_Port, LD1_Pin)){
+			sprintf(s,"LED1 ON\n\r");
 			netconn_write(conn, s, strlen(s), NETCONN_COPY);
-		}
-
-		/*else{
+		}else{
 			sprintf(s,"LED1 OFF\n\r");
 			netconn_write(conn, s, strlen(s), NETCONN_COPY);
 		}
-		if (HAL_GPIO_ReadPin(LED2_GPIO_Port, LED2_Pin)){
+		if (HAL_GPIO_ReadPin(LD2_GPIO_Port, LD2_Pin)){
 			sprintf(s,"LED2 ON\n\r");
 			netconn_write(conn, s, strlen(s), NETCONN_COPY);
-		}
-		else{
+		}else{
 			sprintf(s,"LED2 OFF\n\r");
 			netconn_write(conn, s, strlen(s), NETCONN_COPY);
 		}
-		 */
-
+		if (HAL_GPIO_ReadPin(LD3_GPIO_Port, LD3_Pin)){
+			sprintf(s,"LED3 ON\n\r");
+			netconn_write(conn, s, strlen(s), NETCONN_COPY);
+		}else{
+			sprintf(s,"LED3 OFF\n\r");
+			netconn_write(conn, s, strlen(s), NETCONN_COPY);
+		}
 	}
+	// INCORRECT COMMAND
 	else{
 		sprintf(s,"Neplatny Prikaz\n\r");
 		netconn_write(conn, s, strlen(s), NETCONN_COPY);
@@ -188,7 +186,7 @@ static void telnet_thread(void *arg)
 
 	if (conn!=NULL)
 	{
-		/* Bind connection to well known port number 7. */
+		/* Bind connection to well known port number 23. */
 		err = netconn_bind(conn, NULL, 23);
 
 		if (err == ERR_OK)
